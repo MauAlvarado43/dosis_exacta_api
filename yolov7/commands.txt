@@ -1,3 +1,0 @@
-python train.py --workers 8 --device 0 --batch-size 8 --epochs 40 --img 640 640 --data data\imss.yaml  --hyp data\hyp.scratch.custom.yaml --cfg cfg\training\yolov7.yaml --weights yolov7.pt --name imss
-
-python detect.py --weights weights_big/best_70.pt --img-size 640 --conf 0.6 --source inference\images\

@@ -1,4 +1,0 @@
-train: ./data/train
-val: ./data/valid
-nc: 1
-names: ["table"]
