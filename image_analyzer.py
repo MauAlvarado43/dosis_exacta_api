@@ -1,7 +1,6 @@
 import cv2 as cv
 import torch
 import pytesseract
-import pickle
 import numpy as np
 import base64
 from text_analyzer import extract_gtp_indications
