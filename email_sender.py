@@ -1,19 +1,9 @@
 import smtplib, ssl
-
-def load_env_email():
-
-    variables = {}
-
-    with open(".env") as f:
-        for line in f:
-            key, value = line.split("=")
-            variables[key] = value.strip()
-
-    return variables
+from env import load_env
 
 def send_email(subject, body, target):
 
-    email_variables = load_env_email()
+    email_variables = load_env()
 
     smtp_server = email_variables["SMTP_SERVER"]
     port = email_variables["SMTP_PORT"]

@@ -1,4 +1,9 @@
 import re
+import openai
+import json
+from env import load_env
+
+openai.api_key = load_env()["OPENAI_API_KEY"]
 
 drugs = frozenset(
     [
@@ -124,7 +129,9 @@ def clean_text(corpus):
     
     return sentences
 
-def get_text_indications(text):
+def extract_indications(text):
+
+    print(text)
 
     sentences = clean_text(text)
     indications = []
@@ -211,5 +218,36 @@ def get_text_indications(text):
         })
 
     print(indications)
+
+    return indications
+
+def extract_gtp_indications(text):
+
+    prompt = "Extrae los medicamentos que encuentres en formato JSON (medicine[string], indications[string], frequency_hour[value, unit], duration_days[value, unit]). No agregues información de tu base de datos. En caso de no haber medicamentos, regresa un json vacío, no digas nada \n\n"
+    sentences = clean_text(text)
+    indications = []
+
+    for sentence in sentences:
+
+        print(prompt + sentence + "\n")
+
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt + sentence + "\n",
+            temperature=0,
+            max_tokens=2500,
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0
+        )
+
+        try:
+            res = response["choices"][0]["text"]
+            if res != "" and res != " " and res != "{}": 
+                data = json.loads(res)
+                if data["medicine"] != "" and data["medicine"] != " " and data["medicine"] != "": 
+                    indications.append(data)
+        except:
+            pass
 
     return indications

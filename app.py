@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from flask_cors import CORS
 from email_sender import send_email
 from image_analyzer import get_indications
@@ -21,6 +21,6 @@ def send_email_handler():
 
 @app.route("/api/analyze_photo/", methods=["POST"])
 def analyze_photo_handler():
-    image = request.form["file"]
-    get_indications(image)
-    return "Photo analyzed"
+    form_image = request.get_json()["image"]
+    medicines = get_indications(form_image)
+    return jsonify({ "medicines": medicines })
