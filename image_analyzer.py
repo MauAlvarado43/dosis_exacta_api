@@ -13,7 +13,14 @@ def get_medical_region(image):
     model.eval()
     results = model(image, size = 640)
     
+    if results is None:
+        return None
+
     bboxes = results.pandas().xyxy[0].values
+
+    if len(bboxes) == 0:
+        return None
+
     best_bbox = bboxes[0]
     medical_region = image[int(best_bbox[1]) : int(best_bbox[3]), int(best_bbox[0]) : int(best_bbox[2])]
 
@@ -22,6 +29,9 @@ def get_medical_region(image):
 def analyze_image(image):
 
     medical_region = get_medical_region(image)
+
+    if medical_region is None:
+        return None
 
     cv.imwrite("./temp/medical_region.jpg", medical_region)
     cv.imwrite("./temp/medical_receipe.jpg", image)
@@ -40,6 +50,10 @@ def get_indications(form_image):
     image = cv.imdecode(image, cv.IMREAD_COLOR)
 
     text = analyze_image(image)
+
+    if text is None:
+        return None
+
     indications = extract_gtp_indications(text)
 
     return indications
